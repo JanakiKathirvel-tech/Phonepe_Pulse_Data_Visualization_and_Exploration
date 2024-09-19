@@ -10,6 +10,7 @@ with st.sidebar:
 
 if select == "HOME":
     pass
+
 elif select == "DATA EXPLORATION":
     tab1,tab2,tab3 =st.tabs(["Aggregated analysis","Map analysis","Top analysis"])
 
@@ -39,3 +40,6 @@ elif select == "DATA EXPLORATION":
             pass
         elif top_method == "Top User Analysis":
             pass
+
+elif select == "TOP CHARTS":
+    pass
