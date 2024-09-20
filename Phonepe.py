@@ -130,6 +130,46 @@ def Transaction_amount_count_y(df, year):
                                 hover_name= "States", title = f"{year} TRANSACTION COUNT", fitbounds="locations", height=600, width= 600)
         fig_india_2.update_geos(visible = False)
         st.plotly_chart(fig_india_2)
+    
+    return agg_Trans_amtcount
+
+
+def Transaction_amount_count_Q(df, quater):
+    agg_Trans_amtcount =  df[df["Quater"]== quater]
+    agg_Trans_amtcount.reset_index(drop = True, inplace= True)
+    agg_Trans_amtcount = agg_Trans_amtcount.groupby("States")[["Transaction_count", "Transaction_amount"]].sum()
+    agg_Trans_amtcount.reset_index(inplace=True)
+    fig_amount = px.bar(agg_Trans_amtcount, x="States", y="Transaction_amount", title=f"{quater} Transaction Amount", height=650, width= 600
+                        )
+    st.plotly_chart(fig_amount)
+
+    fig_count = px.bar(agg_Trans_amtcount, x="States", y="Transaction_count", title=f"{quater} Transaction Count", height=650, width= 600
+                        )
+    st.plotly_chart(fig_count)
+
+    url= "https://gist.githubusercontent.com/jbrobst/56c13bbbf9d97d187fea01ca62ea5112/raw/e388c4cae20aa53cb5090210a42ebb9b765c0a36/india_states.geojson"
+    response = requests.get(url)
+    data1 = json.loads(response.content)
+    
+    states_name =[] 
+    for feature in data1["features"]:
+        states_name.append(feature["properties"]["ST_NM"])
+
+    states_name.sort()
+
+    fig_india_3 = px.choropleth(agg_Trans_amtcount, geojson=data1, locations="States", featureidkey="properties.ST_NM",
+                                color="Transaction_amount", color_continuous_scale="Rainbow", 
+                               range_color=(agg_Trans_amtcount["Transaction_amount"].min(),agg_Trans_amtcount["Transaction_amount"].max()),
+                               hover_name= "States", title = f"{quater} TRANSACTION AMOUNT", fitbounds="locations", height=600, width= 600)
+    fig_india_3.update_geos(visible = False)
+    st.plotly_chart(fig_india_3)
+
+    fig_india_4 = px.choropleth(agg_Trans_amtcount, geojson=data1, locations="States", featureidkey="properties.ST_NM",
+                                color="Transaction_count", color_continuous_scale="Rainbow", 
+                               range_color=(agg_Trans_amtcount["Transaction_count"].min(),agg_Trans_amtcount["Transaction_count"].max()),
+                               hover_name= "States", title = f"{quater} TRANSACTION COUNT", fitbounds="locations", height=600, width= 600)
+    fig_india_4.update_geos(visible = False)
+    st.plotly_chart(fig_india_4)
 
 # Streamlit part
 st.set_page_config( layout= "wide")
@@ -153,8 +193,10 @@ elif select == "DATA EXPLORATION":
 
             with col1:
                 years = st.slider("select the year", agg_insurance["Years"].min(), agg_insurance["Years"].max(), agg_insurance["Years"].min())
+                quaters = st.slider("select the year", agg_insurance["Quater"].min(), agg_insurance["Quater"].max(), agg_insurance["Quater"].min())
 
-            Transaction_amount_count_y(agg_insurance, years)
+            trans_agg_Y = Transaction_amount_count_y(agg_insurance, years)
+            Transaction_amount_count_Q(trans_agg_Y, quaters )
         elif agg_method == "Transaction Analysis":
             pass
         elif agg_method == "User Analysis":
