@@ -301,6 +301,15 @@ def Top_user_plot_2(df,state):
     st.plotly_chart(fig_top_plot_1)
 
 
+def top_states_agg():
+    lt= agg_transaction[["States", "Transaction_amount"]]
+    lt1= lt.groupby("States")["Transaction_amount"].sum().sort_values(ascending= False)
+    lt2= pd.DataFrame(lt1).reset_index().head(10)
+
+    fig_lts= px.bar(lt2, x= "States", y= "Transaction_amount",title= "TOP 10 TRANSACTION AMOUNT and STATES",
+                    color_discrete_sequence= px.colors.sequential.Oranges_r)
+    return st.plotly_chart(fig_lts)
+
 # Streamlit part
 st.set_page_config( layout= "wide")
 st.title("PHONEPE DATA VISUALIZATION AND EXPLORATION")
@@ -322,13 +331,13 @@ if select == "HOME":
         st.write("****PIN Authorization****")
         st.download_button("DOWNLOAD THE APP NOW", "https://www.phonepe.com/app-download/")
     with col2:
-       # st.video("C:\\Users\\vignesh\\Desktop\\CAPSTONE Projects\\phone pe\\Phone Pe Ad(720P_HD).mp4")
+       # st.video("C:\\Users\\KJ\\Desktop\\CAPSTONE Projects\\phone pe\\Phone Pe Ad(720P_HD).mp4")
        pass
 
     col3,col4= st.columns(2)
     
     with col3:
-       # st.video("C:\\Users\\vignesh\\Desktop\\CAPSTONE Projects\\phone pe\\PhonePe Motion Graphics(720P_HD).mp4")
+       # st.video("C:\\Users\\KJ\\Desktop\\CAPSTONE Projects\\phone pe\\PhonePe Motion Graphics(720P_HD).mp4")
        pass
 
     with col4:
@@ -359,7 +368,7 @@ if select == "HOME":
         st.write("****Instantly & Free****")
 
     with col6:
-        #st.video("C:\\Users\\vignesh\\Desktop\\CAPSTONE Projects\\phone pe\\PhonePe Motion Graphics(720P_HD)_2.mp4")
+        #st.video("C:\\Users\\KJ\\Desktop\\CAPSTONE Projects\\phone pe\\PhonePe Motion Graphics(720P_HD)_2.mp4")
         pass
 
 elif select == "DATA EXPLORATION":
@@ -380,7 +389,7 @@ elif select == "DATA EXPLORATION":
 
             col1,col2= st.columns(2)
             with col1:
-                quaters = st.slider("select the year", agg_insurance["Quater"].min(), agg_insurance["Quater"].max(), agg_insurance["Quater"].min())
+                quaters = st.slider("select the year", insurance_agg_Y["Quater"].min(), insurance_agg_Y["Quater"].max(), insurance_agg_Y["Quater"].min())
 
             Transaction_amount_count_Q(insurance_agg_Y, quaters )
 
@@ -424,7 +433,7 @@ elif select == "DATA EXPLORATION":
 
             col1,col2= st.columns(2)
             with col1:
-                 quaters = st.slider("select the year", map_insurance["Quater"].min(), map_insurance["Quater"].max(), map_insurance["Quater"].min())
+                 quaters = st.slider("select the Quater", insurance_map_Y["Quater"].min(), insurance_map_Y["Quater"].max(), insurance_map_Y["Quater"].min())
             Transaction_amount_count_Q(insurance_map_Y, quaters )
 
 
@@ -470,7 +479,7 @@ elif select == "DATA EXPLORATION":
 
             col1,col2= st.columns(2)
             with col1:
-                 quaters = st.slider("select the year", top_insurance["Quater"].min(), top_insurance["Quater"].max(), top_insurance["Quater"].min())
+                 quaters = st.slider("select the year", insurance_top_Y["Quater"].min(), insurance_top_Y["Quater"].max(), insurance_top_Y["Quater"].min())
             Transaction_amount_count_Q(insurance_top_Y, quaters )
         elif top_method == "Top Transaction Analysis":
             col1,col2 = st.columns(2)
@@ -499,4 +508,16 @@ elif select == "DATA EXPLORATION":
                 top_user_Y_Q= Map_user_plot_2(top_user_Y,quarter_mu1)
 
 elif select == "TOP CHARTS":
-    pass
+    # ques= st.selectbox("**Select the Question**",('Top Brands Of Mobiles Used','States With Lowest Trasaction Amount',
+    #                               'Districts With Highest Transaction Amount','Top 10 Districts With Lowest Transaction Amount',
+    #                               'Top 10 States With AppOpens','Least 10 States With AppOpens','States With Lowest Trasaction Count',
+    #                              'States With Highest Trasaction Count','States With Highest Trasaction Amount',
+    #                              'Top 50 Districts With Lowest Transaction Amount'))
+    
+    ques = st.selectbox("***Select the Question***",
+                        ('Top 10 States having more agg_transaction_amount'))
+
+    if ques=="Top 10 States having more agg_transaction_amount":
+        top_states_agg()
+
+   
